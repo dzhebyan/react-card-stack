@@ -22,7 +22,7 @@ export default class Example extends React.Component {
         <StackCards
           cardHeight={234}
           cards={this.state.cards}
-          defaultSelectedIndex={this.state.cards.length - 1}
+          selectedIndex={this.state.cards.length - 1}
           transitionTime={CARD_TRANSITION}
           visibleAreaHeight={50}
         >

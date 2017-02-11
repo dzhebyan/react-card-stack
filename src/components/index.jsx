@@ -7,8 +7,8 @@ const propTypes = {
   cards: React.PropTypes.array,
   children: React.PropTypes.func.isRequired,
   containerHeightLimit: React.PropTypes.number,
-  defaultSelectedIndex: React.PropTypes.number.isRequired,
   isCardVisible: React.PropTypes.func,
+  selectedIndex: React.PropTypes.number.isRequired,
   transitionTime: React.PropTypes.number,
   visibleAreaHeight: React.PropTypes.number,
 };
@@ -25,20 +25,20 @@ export default class StackCards extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedCardIndex: props.defaultSelectedIndex,
+      selectedCardIndex: props.selectedIndex,
     };
     this.onCardSelect = this.onCardSelect.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { cards, defaultSelectedIndex } = this.props;
+    const { cards, selectedIndex } = this.props;
     // reset state when new list of cards coming
     if (cards !== nextProps.cards) {
-      this.setState({ selectedCardIndex: nextProps.defaultSelectedIndex });
+      this.setState({ selectedCardIndex: nextProps.selectedIndex });
     }
     // reset state when new default card index is set
-    if (defaultSelectedIndex !== nextProps.defaultSelectedIndex) {
-      this.setState({ selectedCardIndex: nextProps.defaultSelectedIndex });
+    if (selectedIndex !== nextProps.selectedIndex) {
+      this.setState({ selectedCardIndex: nextProps.selectedIndex });
     }
   }
 
