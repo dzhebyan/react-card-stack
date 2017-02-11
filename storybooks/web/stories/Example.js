@@ -6,49 +6,41 @@ export default class Example extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedCardId: 4,
+      cards: [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }],
     };
-    this.onCardSelect = this.onCardSelect.bind(this);
   }
 
-  onCardSelect(selectedCardId) {
-    this.setState({
-      selectedCardId,
-    });
+  addCard() {
+    this.setState({ cards: [...this.state.cards, { id: this.state.cards.length }] });
   }
 
   render() {
     const CARD_TRANSITION = 0.3;
     return (
-      <StackCards
-        cardHeight={234}
-        cards={[{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]}
-        selectedCardIndex={this.state.selectedCardId}
-        transitionTime={CARD_TRANSITION}
-        visibleAreaHeight={50}
-      >
-        {(cardItem, index, cardShift) => {
-          const style = {
-            backgroundColor: 'white',
-            boxShadow: 'rgba(0, 0, 0, 0.2) 0px 0px 3px 0px',
-            height: 234,
-            position: 'absolute',
-            transform: `translate3d(0px, ${cardShift}px, 0px)`,
-            transition: `transform ${CARD_TRANSITION}s`,
-            width: 400,
-            zIndex: index,
-          };
-          return (
-            <div
-              key={`card-${cardItem.id}`}
-              style={style}
-              onClick={() => { this.onCardSelect(index); }}
-            >
-              {`Card ${cardItem.id}`}
-            </div>
-          );
-        }}
-      </StackCards>
+      <div>
+        <div onClick={() => { this.addCard(); }}>Add Card</div>
+        <StackCards
+          cardHeight={234}
+          cards={this.state.cards}
+          defaultSelectedIndex={this.state.cards.length - 1}
+          transitionTime={CARD_TRANSITION}
+          visibleAreaHeight={50}
+        >
+          {(cardItem) => {
+            const style = {
+              backgroundColor: 'white',
+              boxShadow: 'rgba(0, 0, 0, 0.2) 0px 0px 3px 0px',
+              height: 234,
+              width: 400,
+            };
+            return (
+              <div style={style} >
+                {`Card ${cardItem.id}`}
+              </div>
+            );
+          }}
+        </StackCards>
+      </div>
     );
   }
 }

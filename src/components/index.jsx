@@ -1,13 +1,14 @@
 import React from 'react';
-import CardsStackRender from '../components-styled';
+import CardContainer from '../components-styled/CardContainer';
+import CardsStackRender from '../components-styled/CardsStackRender';
 
 const propTypes = {
   cardHeight: React.PropTypes.number,
   cards: React.PropTypes.array,
   children: React.PropTypes.func.isRequired,
+  containerHeightLimit: React.PropTypes.number,
+  defaultSelectedIndex: React.PropTypes.number.isRequired,
   isCardVisible: React.PropTypes.func,
-  minHeight: React.PropTypes.number,
-  selectedCardIndex: React.PropTypes.number,
   transitionTime: React.PropTypes.number,
   visibleAreaHeight: React.PropTypes.number,
 };
@@ -20,6 +21,30 @@ const defaultProps = {
 };
 
 export default class StackCards extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedCardIndex: props.defaultSelectedIndex,
+    };
+    this.onCardSelect = this.onCardSelect.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { cards, defaultSelectedIndex } = this.props;
+    // reset state when new list of cards coming
+    if (cards !== nextProps.cards) {
+      this.setState({ selectedCardIndex: nextProps.defaultSelectedIndex });
+    }
+    // reset state when new default card index is set
+    if (defaultSelectedIndex !== nextProps.defaultSelectedIndex) {
+      this.setState({ selectedCardIndex: nextProps.defaultSelectedIndex });
+    }
+  }
+
+  onCardSelect(selectedCardIndex) {
+    this.setState({ selectedCardIndex });
+  }
 
   getCalculatedHeight(filteredCards, selectedCardIndex) {
     const { cardHeight, visibleAreaHeight } = this.props;
@@ -40,27 +65,41 @@ export default class StackCards extends React.Component {
   }
 
   isLastCard(cards, index) {
-    const numberOfCards = cards.length;
-    return index === (numberOfCards - 1);
+    return index === cards.length - 1;
   }
 
   renderCards(cards, selectedCardIndex) {
-    const { isCardVisible, visibleAreaHeight, children } = this.props;
+    const { children, isCardVisible, transitionTime, visibleAreaHeight } = this.props;
     return cards.map((cardItem, index) => {
       const cardShift = this.getCalculatedShift(visibleAreaHeight, index, selectedCardIndex);
       const isVisible = isCardVisible ? isCardVisible(index, cardShift) : true;
       if (!isVisible) {
         return null;
       }
-      return children(cardItem, index, cardShift);
+      const style = {
+        zIndex: index,
+        transform: `translate3d(0px, ${cardShift}px, 0px)`,
+        transition: `transform ${transitionTime}s`,
+      };
+      return (
+        <CardContainer
+          key={`card-index-${index}`}
+          style={style}
+          onClick={() => { this.onCardSelect(index); }}
+        >
+          {children(cardItem, index)}
+        </CardContainer>
+      );
     });
   }
 
   render() {
-    const { cards, minHeight, selectedCardIndex, transitionTime } = this.props;
+    const { cards, containerHeightLimit, transitionTime } = this.props;
+    const { selectedCardIndex } = this.state;
     const cardsHeight = this.getCalculatedHeight(cards, selectedCardIndex);
-    const containerHeight = minHeight !== undefined && cardsHeight < minHeight
-      ? minHeight
+    // fulfill empty space as part of this component
+    const containerHeight = containerHeightLimit !== undefined && cardsHeight < containerHeightLimit
+      ? containerHeightLimit
       : cardsHeight;
     const style = {
       height: `${containerHeight}px`,
