@@ -5,13 +5,26 @@ export default class Example extends React.Component {
 
   constructor(props) {
     super(props);
+    const cards = [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }];
     this.state = {
-      cards: [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }],
+      cards,
+      selectedCardIndex: cards.length,
     };
+    this.onSelectCard = this.onSelectCard.bind(this);
   }
 
   addCard() {
-    this.setState({ cards: [...this.state.cards, { id: this.state.cards.length }] });
+    const cards = [...this.state.cards, { id: this.state.cards.length }];
+    this.setState({
+      cards,
+      selectedCardIndex: cards.length,
+    });
+  }
+
+  onSelectCard(selectedIndex) {
+    this.setState({
+      selectedCardIndex: selectedIndex,
+    });
   }
 
   render() {
@@ -22,9 +35,10 @@ export default class Example extends React.Component {
         <StackCards
           cardHeight={234}
           cards={this.state.cards}
-          selectedIndex={this.state.cards.length - 1}
+          selectedIndex={this.state.selectedCardIndex}
           transitionTime={CARD_TRANSITION}
           visibleAreaHeight={50}
+          onCardSelect={this.onSelectCard}
         >
           {(cardItem) => {
             const style = {

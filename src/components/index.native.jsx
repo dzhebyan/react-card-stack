@@ -2,20 +2,22 @@ import React from 'react';
 import { Text } from 'react-native';
 
 const propTypes = {
-  cards: React.PropTypes.any,
+  cardHeight: React.PropTypes.number,
+  cards: React.PropTypes.array,
+  children: React.PropTypes.func.isRequired,
+  containerHeightLimit: React.PropTypes.number,
   isCardVisible: React.PropTypes.func,
-  minHeight: React.PropTypes.number,
-  pageWidth: React.PropTypes.number.isRequired,
-  selectedCardIndex: React.PropTypes.number,
-  useMoreButton: React.PropTypes.bool,
+  selectedIndex: React.PropTypes.number.isRequired,
+  transitionTime: React.PropTypes.number,
+  visibleAreaHeight: React.PropTypes.number,
   onCardSelect: React.PropTypes.func,
-  onCardMoreClick: React.PropTypes.func,
-  onCheckboxChange: React.PropTypes.func,
 };
 
 const defaultProps = {
+  cardHeight: 234,
   cards: [],
-  isHardRender: true,
+  transitionTime: 0.3,
+  visibleAreaHeight: 50,
 };
 
 export default class StackCards extends React.Component {

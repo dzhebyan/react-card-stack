@@ -11,6 +11,7 @@ const propTypes = {
   selectedIndex: React.PropTypes.number.isRequired,
   transitionTime: React.PropTypes.number,
   visibleAreaHeight: React.PropTypes.number,
+  onCardSelect: React.PropTypes.func,
 };
 
 const defaultProps = {
@@ -24,41 +25,29 @@ export default class StackCards extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      selectedCardIndex: props.selectedIndex,
-    };
     this.onCardSelect = this.onCardSelect.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { cards, selectedIndex } = this.props;
-    // reset state when new list of cards coming
-    if (cards !== nextProps.cards) {
-      this.setState({ selectedCardIndex: nextProps.selectedIndex });
-    }
-    // reset state when new default card index is set
-    if (selectedIndex !== nextProps.selectedIndex) {
-      this.setState({ selectedCardIndex: nextProps.selectedIndex });
+  onCardSelect(selectedIndex) {
+    const { onCardSelect } = this.props;
+    if (onCardSelect) {
+      onCardSelect(selectedIndex);
     }
   }
 
-  onCardSelect(selectedCardIndex) {
-    this.setState({ selectedCardIndex });
-  }
-
-  getCalculatedHeight(filteredCards, selectedCardIndex) {
+  getCalculatedHeight(filteredCards, selectedIndex) {
     const { cardHeight, visibleAreaHeight } = this.props;
     const cardBody = cardHeight - visibleAreaHeight;
     const numberOfCards = filteredCards.length;
-    if (this.isLastCard(filteredCards, selectedCardIndex)) {
+    if (this.isLastCard(filteredCards, selectedIndex)) {
       return numberOfCards * visibleAreaHeight + cardBody;
     }
     return numberOfCards * visibleAreaHeight + 2 * cardBody;
   }
 
-  getCalculatedShift(transformYShift, index, selectedCardIndex) {
+  getCalculatedShift(transformYShift, index, selectedIndex) {
     const { cardHeight } = this.props;
-    if (index <= selectedCardIndex) {
+    if (index <= selectedIndex) {
       return transformYShift * index;
     }
     return transformYShift * (index - 1) + cardHeight;
@@ -94,9 +83,8 @@ export default class StackCards extends React.Component {
   }
 
   render() {
-    const { cards, containerHeightLimit, transitionTime } = this.props;
-    const { selectedCardIndex } = this.state;
-    const cardsHeight = this.getCalculatedHeight(cards, selectedCardIndex);
+    const { cards, containerHeightLimit, selectedIndex, transitionTime } = this.props;
+    const cardsHeight = this.getCalculatedHeight(cards, selectedIndex);
     // fulfill empty space as part of this component
     const containerHeight = containerHeightLimit !== undefined && cardsHeight < containerHeightLimit
       ? containerHeightLimit
@@ -107,7 +95,7 @@ export default class StackCards extends React.Component {
     };
     return (
       <CardsStackRender style={style} >
-        {this.renderCards(cards, selectedCardIndex)}
+        {this.renderCards(cards, selectedIndex)}
       </CardsStackRender>
     );
   }
