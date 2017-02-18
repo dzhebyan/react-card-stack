@@ -6,7 +6,6 @@ const propTypes = {
   cards: React.PropTypes.array,
   children: React.PropTypes.func.isRequired,
   containerHeightLimit: React.PropTypes.number,
-  isCardVisible: React.PropTypes.func,
   selectedIndex: React.PropTypes.number.isRequired,
   transitionTime: React.PropTypes.number,
   visibleAreaHeight: React.PropTypes.number,

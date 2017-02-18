@@ -7,7 +7,6 @@ const propTypes = {
   cards: React.PropTypes.array,
   children: React.PropTypes.func.isRequired,
   containerHeightLimit: React.PropTypes.number,
-  isCardVisible: React.PropTypes.func,
   selectedIndex: React.PropTypes.number.isRequired,
   transitionTime: React.PropTypes.number,
   visibleAreaHeight: React.PropTypes.number,
@@ -58,13 +57,9 @@ export default class StackCards extends React.Component {
   }
 
   renderCards(cards, selectedCardIndex) {
-    const { children, isCardVisible, transitionTime, visibleAreaHeight } = this.props;
+    const { children, transitionTime, visibleAreaHeight } = this.props;
     return cards.map((cardItem, index) => {
       const cardShift = this.getCalculatedShift(visibleAreaHeight, index, selectedCardIndex);
-      const isVisible = isCardVisible ? isCardVisible(index, cardShift) : true;
-      if (!isVisible) {
-        return null;
-      }
       const style = {
         zIndex: index,
         transform: `translate3d(0px, ${cardShift}px, 0px)`,
