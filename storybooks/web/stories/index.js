@@ -2,10 +2,6 @@ import React from 'react';
 import { storiesOf } from '@kadira/storybook';
 import Example from './Example';
 
-import ARTSVGMode from 'art/modes/svg';
-import ARTCurrentMode from 'art/modes/current';
-ARTCurrentMode.setCurrent(ARTSVGMode);
-
 storiesOf('Examples', module)
   .add('4 cards', () => (
     <div>
